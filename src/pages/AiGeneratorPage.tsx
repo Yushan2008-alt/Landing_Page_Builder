@@ -323,10 +323,66 @@ export function AiGeneratorPage() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const handleOpenBlackbox = async () => {
-    // Copy prompt to clipboard first, then open Blackbox AI (URL param not supported)
+  const handleOpenAI = async () => {
+    // 1. Copy prompt on current page (reliable inside user-gesture context)
     try { await navigator.clipboard.writeText(prompt) } catch { /* silent */ }
-    window.open('https://www.blackbox.ai/', '_blank', 'noopener,noreferrer')
+
+    // 2. Try bolt.new with ?prompt= URL param (direct auto-generate).
+    //    If the URL is too long, bolt.new will just open normally and user pastes.
+    const boltUrl = `https://bolt.new/?prompt=${encodeURIComponent(prompt)}`
+
+    // 3. Show branded relay page → then redirect to bolt.new
+    const escaped = prompt
+      .replace(/\\/g, '\\\\')
+      .replace(/`/g, '\\`')
+      .replace(/<\/script>/gi, '<\\/script>')
+
+    const relayHtml = `<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LP Builder → bolt.new</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#0a0a0f;min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:system-ui,sans-serif}
+  .card{background:#12111a;border:1px solid #2d2b45;border-radius:20px;padding:40px 48px;text-align:center;max-width:440px;width:90%;box-shadow:0 0 60px #7c3aed22}
+  .ring{width:56px;height:56px;border:3px solid #1e1c2e;border-top-color:#7c3aed;border-radius:50%;animation:spin .9s linear infinite;margin:0 auto 24px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  h2{color:#e2e0ff;font-size:18px;font-weight:700;margin-bottom:8px}
+  p{color:#6b6888;font-size:13px;line-height:1.6;margin-bottom:6px}
+  .badge{display:inline-flex;align-items:center;gap:6px;background:#7c3aed22;border:1px solid #7c3aed44;color:#a78bfa;font-size:12px;font-weight:600;padding:6px 14px;border-radius:99px;margin:14px 0}
+  .dot{width:7px;height:7px;background:#7c3aed;border-radius:50%;animation:pulse 1.2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+  .tip{margin-top:16px;background:#0d0c15;border:1px solid #1e1c2e;border-radius:10px;padding:12px 16px;font-size:12px;color:#5a5870;line-height:1.7}
+  kbd{background:#1e1c2e;color:#a78bfa;border-radius:5px;padding:2px 7px;font-family:monospace;font-size:11px}
+  .sub{font-size:11px;color:#3d3b55;margin-top:10px}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="ring"></div>
+  <h2>Prompt Siap!</h2>
+  <p>Mengarahkan ke <strong style="color:#a78bfa">bolt.new</strong> untuk membuat landing page…</p>
+  <div class="badge"><span class="dot"></span> AI Coding — bolt.new</div>
+  <div class="tip">
+    Jika prompt <strong style="color:#c4b5fd">tidak otomatis terisi</strong>:<br>
+    Klik kolom chat → tekan <kbd>Ctrl</kbd>+<kbd>V</kbd> → <kbd>Enter</kbd>
+  </div>
+  <p class="sub">Prompt sudah tersalin ke clipboard ✓</p>
+</div>
+<script>
+  try { navigator.clipboard.writeText(\`${escaped}\`); } catch(e) {}
+  // Redirect to bolt.new with prompt param — bolt.new will auto-fill if URL param is supported
+  setTimeout(function(){ window.location.href = '${boltUrl.replace(/'/g, "\\'")}'; }, 1800);
+<\/script>
+</body>
+</html>`
+
+    const blob = new Blob([relayHtml], { type: 'text/html' })
+    const relayBlobUrl = URL.createObjectURL(blob)
+    window.open(relayBlobUrl, '_blank')
+    setTimeout(() => URL.revokeObjectURL(relayBlobUrl), 20000)
   }
 
   const handleReset = () => {
@@ -399,7 +455,7 @@ export function AiGeneratorPage() {
                 <Zap className="w-3 h-3" /> AI Prompt Generator
               </p>
               <h1 className="text-2xl font-bold text-foreground mb-1">Landing Page Sales Builder</h1>
-              <p className="text-sm text-muted-foreground">Isi formulir di bawah, klik Generate, lalu buka di Blackbox AI untuk mendapatkan kode landing page siap pakai.</p>
+              <p className="text-sm text-muted-foreground">Isi formulir di bawah, klik Generate, lalu AI akan langsung membuat kode landing page siap pakai via bolt.new.</p>
             </div>
 
             {/* Section 1: Framework & Tone */}
@@ -604,7 +660,7 @@ export function AiGeneratorPage() {
                 style={{ borderColor: 'oklch(0.20 0.03 285)' }}
               >
                 <Button
-                  onClick={handleOpenBlackbox}
+                  onClick={handleOpenAI}
                   disabled={!prompt}
                   className="w-full gap-2 h-11 text-sm font-semibold"
                   style={{
@@ -612,7 +668,7 @@ export function AiGeneratorPage() {
                   }}
                 >
                   <ExternalLink className="w-4 h-4" />
-                  Salin & Buka Blackbox AI
+                  Generate di bolt.new
                 </Button>
                 {prompt && (
                   <div
@@ -623,7 +679,7 @@ export function AiGeneratorPage() {
                       color: 'oklch(0.70 0.06 285)',
                     }}
                   >
-                    <strong className="text-foreground">Cara pakai:</strong> Klik tombol di atas → prompt otomatis tersalin ke clipboard → Blackbox AI terbuka → <strong className="text-foreground">Paste (Ctrl+V)</strong> di kolom chat → kirim.
+                    Klik → bolt.new terbuka → prompt otomatis terisi → AI langsung generate kode. Jika belum terisi, tekan <strong className="text-foreground">Ctrl+V</strong> lalu <strong className="text-foreground">Enter</strong>.
                   </div>
                 )}
               </div>
@@ -684,12 +740,12 @@ export function AiGeneratorPage() {
 
               <div className="p-5 space-y-4">
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Setelah Blackbox AI selesai membuat kode, <strong className="text-foreground">copy semua kode HTML</strong> dari Blackbox AI, lalu paste di sini. Kode akan disimpan sebagai project di dashboard kamu.
+                  Setelah bolt.new selesai membuat kode, <strong className="text-foreground">copy semua kode HTML</strong> dari bolt.new, lalu paste di sini. Kode akan disimpan sebagai project di dashboard kamu.
                 </p>
 
                 {/* Steps */}
                 <div className="flex gap-2 text-xs">
-                  {['1. Generate di Blackbox AI', '2. Copy kode HTML', '3. Paste & simpan di sini'].map((s, i) => (
+                  {['1. Generate di bolt.new', '2. Copy kode HTML', '3. Paste & simpan di sini'].map((s, i) => (
                     <div
                       key={i}
                       className="flex-1 rounded-lg px-2 py-2 text-center leading-tight"
@@ -720,7 +776,7 @@ export function AiGeneratorPage() {
                 {/* HTML textarea */}
                 <div className="space-y-1.5">
                   <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                    Kode HTML dari Blackbox AI <span className="text-primary">*</span>
+                    Kode HTML dari bolt.new <span className="text-primary">*</span>
                   </Label>
                   <textarea
                     value={importHtml}
