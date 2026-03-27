@@ -4,6 +4,7 @@ import { Input } from '../../ui/input'
 import { Button } from '../../ui/button'
 import { Switch } from '../../ui/switch'
 import { ColorPickerField } from '../shared/ColorPickerField'
+import { PresetSelector } from '../shared/PresetSelector'
 import { Plus, Trash2, ChevronDown, ChevronRight } from 'lucide-react'
 import { useState } from 'react'
 
@@ -23,7 +24,9 @@ export function PricingEditor({ content: c, onChange }: Props) {
   const removePlan = (i: number) => onChange({ plans: c.plans.filter((_, idx) => idx !== i) })
 
   return (
-    <div className="flex flex-col gap-3 p-4">
+    <div className="flex flex-col gap-3 pb-4">
+      <PresetSelector type="pricing" onSelect={(preset) => onChange(preset)} />
+      <div className="flex flex-col gap-3 px-4">
       <div className="space-y-1.5">
         <Label className="text-xs text-muted-foreground">Title</Label>
         <Input value={c.title} onChange={(e) => onChange({ title: e.target.value })} className="h-8 text-sm" />
@@ -83,6 +86,7 @@ export function PricingEditor({ content: c, onChange }: Props) {
             )}
           </div>
         ))}
+      </div>
       </div>
     </div>
   )

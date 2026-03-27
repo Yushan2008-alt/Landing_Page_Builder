@@ -3,12 +3,15 @@ import { Label } from '../../ui/label'
 import { Input } from '../../ui/input'
 import { ColorPickerField } from '../shared/ColorPickerField'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select'
+import { PresetSelector } from '../shared/PresetSelector'
 
 interface Props { content: CtaContent; onChange: (patch: Partial<CtaContent>) => void }
 
 export function CtaEditor({ content: c, onChange }: Props) {
   return (
-    <div className="flex flex-col gap-3 p-4">
+    <div className="flex flex-col gap-3 pb-4">
+      <PresetSelector type="cta" onSelect={(preset) => onChange(preset)} />
+      <div className="flex flex-col gap-3 px-4">
       <div className="space-y-1.5">
         <Label className="text-xs text-muted-foreground">Headline</Label>
         <Input value={c.headline} onChange={(e) => onChange({ headline: e.target.value })} className="h-8 text-sm" />
@@ -50,6 +53,7 @@ export function CtaEditor({ content: c, onChange }: Props) {
       <div className="border-t border-border pt-3 space-y-1.5">
         <Label className="text-xs text-muted-foreground">Background Image URL</Label>
         <Input value={c.backgroundImage} onChange={(e) => onChange({ backgroundImage: e.target.value })} className="h-8 text-sm" placeholder="https://..." />
+      </div>
       </div>
     </div>
   )

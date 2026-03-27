@@ -4,12 +4,15 @@ import { Input } from '../../ui/input'
 import { Textarea } from '../../ui/textarea'
 import { ColorPickerField } from '../shared/ColorPickerField'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select'
+import { PresetSelector } from '../shared/PresetSelector'
 
 interface Props { content: AboutContent; onChange: (patch: Partial<AboutContent>) => void }
 
 export function AboutEditor({ content: c, onChange }: Props) {
   return (
-    <div className="flex flex-col gap-3 p-4">
+    <div className="flex flex-col gap-3 pb-4">
+      <PresetSelector type="about" onSelect={(preset) => onChange(preset)} />
+      <div className="flex flex-col gap-3 px-4">
       <div className="space-y-1.5">
         <Label className="text-xs text-muted-foreground">Title</Label>
         <Input value={c.title} onChange={(e) => onChange({ title: e.target.value })} className="h-8 text-sm" />
@@ -45,6 +48,7 @@ export function AboutEditor({ content: c, onChange }: Props) {
         <Input value={c.ctaUrl} onChange={(e) => onChange({ ctaUrl: e.target.value })} className="h-8 text-sm" />
       </div>
       <ColorPickerField label="Accent Color" value={c.accentColor} onChange={(v) => onChange({ accentColor: v })} />
+      </div>
     </div>
   )
 }

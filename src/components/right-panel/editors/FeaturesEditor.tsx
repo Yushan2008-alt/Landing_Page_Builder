@@ -4,6 +4,7 @@ import { Input } from '../../ui/input'
 import { Button } from '../../ui/button'
 import { ColorPickerField } from '../shared/ColorPickerField'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select'
+import { PresetSelector } from '../shared/PresetSelector'
 import { Plus, Trash2 } from 'lucide-react'
 
 interface Props { content: FeaturesContent; onChange: (patch: Partial<FeaturesContent>) => void }
@@ -17,7 +18,9 @@ export function FeaturesEditor({ content: c, onChange }: Props) {
   const removeItem = (i: number) => onChange({ items: c.items.filter((_, idx) => idx !== i) })
 
   return (
-    <div className="flex flex-col gap-3 p-4">
+    <div className="flex flex-col gap-3 pb-4">
+      <PresetSelector type="features" onSelect={(preset) => onChange(preset)} />
+      <div className="flex flex-col gap-3 px-4">
       <div className="space-y-1.5">
         <Label className="text-xs text-muted-foreground">Title</Label>
         <Input value={c.title} onChange={(e) => onChange({ title: e.target.value })} className="h-8 text-sm" />
@@ -60,6 +63,7 @@ export function FeaturesEditor({ content: c, onChange }: Props) {
             </div>
           ))}
         </div>
+      </div>
       </div>
     </div>
   )

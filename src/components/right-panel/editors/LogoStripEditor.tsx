@@ -3,6 +3,7 @@ import { Label } from '../../ui/label'
 import { Input } from '../../ui/input'
 import { Button } from '../../ui/button'
 import { Switch } from '../../ui/switch'
+import { PresetSelector } from '../shared/PresetSelector'
 import { Plus, Trash2 } from 'lucide-react'
 
 interface Props { content: LogoStripContent; onChange: (patch: Partial<LogoStripContent>) => void }
@@ -15,7 +16,9 @@ export function LogoStripEditor({ content: c, onChange }: Props) {
   const removeLogo = (i: number) => onChange({ logos: c.logos.filter((_, idx) => idx !== i) })
 
   return (
-    <div className="flex flex-col gap-3 p-4">
+    <div className="flex flex-col gap-3 pb-4">
+      <PresetSelector type="logo-strip" onSelect={(preset) => onChange(preset)} />
+      <div className="flex flex-col gap-3 px-4">
       <div className="space-y-1.5">
         <Label className="text-xs text-muted-foreground">Title Text</Label>
         <Input value={c.title} onChange={(e) => onChange({ title: e.target.value })} className="h-8 text-sm" placeholder="Trusted by..." />
@@ -44,6 +47,7 @@ export function LogoStripEditor({ content: c, onChange }: Props) {
             </div>
           ))}
         </div>
+      </div>
       </div>
     </div>
   )

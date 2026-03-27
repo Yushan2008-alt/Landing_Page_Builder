@@ -2,12 +2,15 @@ import type { ContactContent } from '../../../types/section'
 import { Label } from '../../ui/label'
 import { Input } from '../../ui/input'
 import { ColorPickerField } from '../shared/ColorPickerField'
+import { PresetSelector } from '../shared/PresetSelector'
 
 interface Props { content: ContactContent; onChange: (patch: Partial<ContactContent>) => void }
 
 export function ContactEditor({ content: c, onChange }: Props) {
   return (
-    <div className="flex flex-col gap-3 p-4">
+    <div className="flex flex-col gap-3 pb-4">
+      <PresetSelector type="contact" onSelect={(preset) => onChange(preset)} />
+      <div className="flex flex-col gap-3 px-4">
       <div className="space-y-1.5">
         <Label className="text-xs text-muted-foreground">Title</Label>
         <Input value={c.title} onChange={(e) => onChange({ title: e.target.value })} className="h-8 text-sm" />
@@ -38,6 +41,7 @@ export function ContactEditor({ content: c, onChange }: Props) {
         <ColorPickerField label="Button Text" value={c.ctaTextColor} onChange={(v) => onChange({ ctaTextColor: v })} />
       </div>
       <ColorPickerField label="Accent Color" value={c.accentColor} onChange={(v) => onChange({ accentColor: v })} />
+      </div>
     </div>
   )
 }
