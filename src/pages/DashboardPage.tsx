@@ -11,7 +11,7 @@ import {
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu'
-import { Layers, Plus, MoreVertical, Moon, Sun, Trash2, ExternalLink, LogOut, Sparkles } from 'lucide-react'
+import { Layers, Plus, MoreVertical, Moon, Sun, Trash2, ExternalLink, LogOut, Sparkles, Wand2 } from 'lucide-react'
 
 export function DashboardPage() {
   const navigate = useNavigate()
@@ -97,6 +97,36 @@ export function DashboardPage() {
 
       <main className="max-w-6xl mx-auto px-6 py-10 relative z-10">
         {/* Header */}
+        {/* AI Generator Banner */}
+        <div
+          className="rounded-2xl p-5 mb-6 flex items-center gap-4 cursor-pointer group transition-all hover:scale-[1.005]"
+          style={{
+            background: 'linear-gradient(135deg, oklch(0.14 0.04 285) 0%, oklch(0.11 0.03 310) 100%)',
+            border: '1px solid oklch(0.62 0.27 285 / 0.25)',
+            boxShadow: '0 0 40px oklch(0.62 0.27 285 / 0.08)',
+          }}
+          onClick={() => navigate('/ai-generator')}
+        >
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+            style={{ background: 'linear-gradient(135deg, oklch(0.62 0.27 285), oklch(0.52 0.22 310))' }}
+          >
+            <Wand2 className="w-6 h-6 text-white" />
+          </div>
+          <div className="flex-1">
+            <p className="font-semibold text-foreground group-hover:text-primary transition-colors">
+              AI Landing Page Generator ✨
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Isi formulir → generate prompt AI → buka di Blackbox AI → dapatkan kode landing page siap pakai
+            </p>
+          </div>
+          <Button size="sm" className="shrink-0 gap-1.5">
+            Coba Sekarang
+            <ExternalLink className="w-3.5 h-3.5" />
+          </Button>
+        </div>
+
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-foreground">My Projects</h1>

@@ -5,6 +5,7 @@ import { LoginPage } from '../pages/LoginPage'
 import { RegisterPage } from '../pages/RegisterPage'
 import { DashboardPage } from '../pages/DashboardPage'
 import { BuilderPage } from '../pages/BuilderPage'
+import { AiGeneratorPage } from '../pages/AiGeneratorPage'
 
 const router = createBrowserRouter([
   { path: '/', element: <LandingPage /> },
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/dashboard', element: <DashboardPage /> },
       { path: '/builder/:projectId', element: <BuilderPage /> },
+      { path: '/ai-generator', element: <AiGeneratorPage /> },
     ],
   },
 ])
