@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useProjects } from '../hooks/useProjects'
 import { useAuth } from '../hooks/useAuth'
-import { useThemeStore } from '../store/themeStore'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import {
@@ -11,13 +10,12 @@ import {
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu'
-import { Layers, Plus, MoreVertical, Moon, Sun, Trash2, ExternalLink, LogOut, Sparkles, Wand2, FileCode2 } from 'lucide-react'
+import { Layers, Plus, MoreVertical, Trash2, ExternalLink, LogOut, Sparkles, Wand2, FileCode2 } from 'lucide-react'
 
 export function DashboardPage() {
   const navigate = useNavigate()
   const { projects, loading, createProject, deleteProject } = useProjects()
   const { user, signOut } = useAuth()
-  const { theme, toggleTheme } = useThemeStore()
   const [newName, setNewName] = useState('')
   const [showCreate, setShowCreate] = useState(false)
   const [deleteId, setDeleteId] = useState<string | null>(null)
@@ -68,10 +66,6 @@ export function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={toggleTheme} className="text-muted-foreground" title="Toggle theme">
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            </Button>
-
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm hover:bg-muted/50 transition-colors outline-none">
                 <div
@@ -95,11 +89,10 @@ export function DashboardPage() {
         </div>
       </nav>
 
-      <main className="max-w-6xl mx-auto px-6 py-10 relative z-10">
-        {/* Header */}
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8 relative z-10">
         {/* AI Generator Banner */}
         <div
-          className="rounded-2xl p-5 mb-6 flex items-center gap-4 cursor-pointer group transition-all hover:scale-[1.005]"
+          className="rounded-2xl p-4 sm:p-5 mb-6 flex items-center gap-3 sm:gap-4 cursor-pointer group transition-all hover:scale-[1.005]"
           style={{
             background: 'linear-gradient(135deg, oklch(0.14 0.04 285) 0%, oklch(0.11 0.03 310) 100%)',
             border: '1px solid oklch(0.62 0.27 285 / 0.25)',
@@ -121,15 +114,15 @@ export function DashboardPage() {
               Isi formulir → generate prompt AI → buka di Blackbox AI → dapatkan kode landing page siap pakai
             </p>
           </div>
-          <Button size="sm" className="shrink-0 gap-1.5">
+          <Button size="sm" className="shrink-0 gap-1.5 hidden sm:flex">
             Coba Sekarang
             <ExternalLink className="w-3.5 h-3.5" />
           </Button>
         </div>
 
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">My Projects</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-foreground">My Projects</h1>
             <p className="text-sm text-muted-foreground mt-1">
               {projects.length} project{projects.length !== 1 ? 's' : ''}
             </p>

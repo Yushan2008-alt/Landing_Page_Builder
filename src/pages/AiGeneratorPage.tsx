@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
-import { useThemeStore } from '../store/themeStore'
 import { useProjects } from '../hooks/useProjects'
 import {
-  ArrowLeft, Wand2, Copy, Check, ExternalLink, Moon, Sun,
+  ArrowLeft, Wand2, Copy, Check, ExternalLink,
   Layers, AlertCircle, Zap, RotateCcw, FolderPlus, Sparkles,
 } from 'lucide-react'
 
@@ -286,7 +285,6 @@ function PlatformCard({ name, selected, onClick }: { name: string; selected: boo
 // ─── Main Page ────────────────────────────────────────────────────────────────
 export function AiGeneratorPage() {
   const navigate = useNavigate()
-  const { theme, toggleTheme } = useThemeStore()
   const { createHtmlProject } = useProjects()
   const [form, setForm] = useState<Form>(EMPTY)
   const [prompt, setPrompt] = useState('')
@@ -432,17 +430,15 @@ export function AiGeneratorPage() {
               >
                 <Wand2 className="w-3 h-3 text-white" />
               </div>
-              <span className="text-sm font-semibold">AI Landing Page Generator</span>
+              <span className="text-sm font-semibold hidden sm:block">AI Landing Page Generator</span>
+              <span className="text-sm font-semibold sm:hidden">AI Generator</span>
             </div>
           </div>
-          <Button variant="ghost" size="icon" onClick={toggleTheme} className="text-muted-foreground">
-            {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </Button>
         </div>
       </nav>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 relative z-10">
         <div className="grid grid-cols-1 xl:grid-cols-[1fr_380px] gap-6">
 
           {/* ── Left: Form ── */}

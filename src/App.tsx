@@ -1,19 +1,15 @@
 import { useEffect } from 'react'
 import { AppRouter } from './router'
-import { useThemeStore } from './store/themeStore'
 import { useAuthStore } from './store/authStore'
 import { supabase, isSupabaseConfigured } from './lib/supabase'
 import { getLocalUser } from './lib/localAuth'
 
 export default function App() {
-  const { theme } = useThemeStore()
   const { setUser, setLoading } = useAuthStore()
 
   useEffect(() => {
-    const root = document.documentElement
-    root.classList.remove('dark', 'light')
-    root.classList.add(theme)
-  }, [theme])
+    document.documentElement.classList.add('dark')
+  }, [])
 
   useEffect(() => {
     if (!isSupabaseConfigured) {

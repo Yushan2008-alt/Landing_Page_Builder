@@ -73,14 +73,14 @@ export function LandingPage() {
       />
 
       {/* Hero */}
-      <section className="relative max-w-6xl mx-auto px-6 pt-28 pb-24 text-center">
+      <section className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-16 pb-14 sm:pt-28 sm:pb-24 text-center">
         {/* Badge */}
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium mb-8 glass-light border border-primary/20 text-primary">
           <Sparkles className="w-3 h-3" />
           No coding required · Export standalone HTML
         </div>
 
-        <h1 className="text-5xl md:text-[64px] font-bold tracking-tight leading-[1.08] mb-6">
+        <h1 className="text-4xl sm:text-5xl md:text-[64px] font-bold tracking-tight leading-[1.08] mb-6">
           Build Landing Pages<br />
           <span className="gradient-text">That Actually Convert</span>
         </h1>
@@ -111,7 +111,7 @@ export function LandingPage() {
       </section>
 
       {/* Features Grid */}
-      <section className="max-w-6xl mx-auto px-6 py-20">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-20">
         <div className="text-center mb-14">
           <h2 className="text-3xl font-bold mb-3">
             Everything you need,{' '}
@@ -120,7 +120,7 @@ export function LandingPage() {
           <p className="text-muted-foreground">Build fast. Ship faster.</p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-5">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
           {features.map((f) => (
             <div
               key={f.title}
@@ -140,7 +140,7 @@ export function LandingPage() {
       </section>
 
       {/* CTA Banner */}
-      <section className="max-w-6xl mx-auto px-6 py-12">
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
         <div
           className="relative rounded-2xl p-10 text-center overflow-hidden"
           style={{

@@ -1,18 +1,15 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useProjects } from '../hooks/useProjects'
-import { useThemeStore } from '../store/themeStore'
 import { Button } from '../components/ui/button'
 import {
-  ArrowLeft, Monitor, Smartphone, Download, Layers, Moon, Sun, Code2,
+  ArrowLeft, Monitor, Smartphone, Download, Layers, Code2,
 } from 'lucide-react'
 
 export function HtmlPreviewPage() {
   const { projectId } = useParams<{ projectId: string }>()
   const navigate = useNavigate()
   const { getProject } = useProjects()
-  const { theme, toggleTheme } = useThemeStore()
-
   const [project, setProject] = useState<ReturnType<typeof getProject>>()
   const [viewport, setViewport] = useState<'desktop' | 'mobile'>('desktop')
   const [showCode, setShowCode] = useState(false)
@@ -54,7 +51,7 @@ export function HtmlPreviewPage() {
     <div className="min-h-screen bg-background text-foreground flex flex-col" style={{ height: '100vh' }}>
       {/* Navbar */}
       <nav className="border-b border-border/50 glass-light z-40 shrink-0">
-        <div className="max-w-full px-4 h-14 flex items-center gap-3 justify-between">
+        <div className="max-w-full px-3 sm:px-4 h-14 flex items-center gap-2 sm:gap-3 justify-between">
           {/* Left */}
           <div className="flex items-center gap-3 min-w-0">
             <button
@@ -136,9 +133,6 @@ export function HtmlPreviewPage() {
             >
               <Download className="w-3.5 h-3.5" />
               Download HTML
-            </Button>
-            <Button variant="ghost" size="icon" onClick={toggleTheme} className="text-muted-foreground">
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </Button>
           </div>
         </div>

@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useBuilderStore } from '../../store/builderStore'
-import { useThemeStore } from '../../store/themeStore'
 import { useClipboard } from '../../hooks/useClipboard'
 import { generateFullHtml } from '../../lib/htmlGenerator'
 import { Button } from '../ui/button'
 import { PreviewModal } from '../preview/PreviewModal'
 import {
-  ArrowLeft, Undo2, Redo2, Eye, Code2, Moon, Sun,
+  ArrowLeft, Undo2, Redo2, Eye, Code2,
   Check, Loader2,
 } from 'lucide-react'
 
@@ -16,7 +15,6 @@ export function Toolbar() {
     projectName, sections, isDirty, isSaving,
     undo, redo, past, future, setProjectName,
   } = useBuilderStore()
-  const { theme, toggleTheme } = useThemeStore()
   const { copy, copied } = useClipboard()
   const [previewOpen, setPreviewOpen] = useState(false)
   const [editingName, setEditingName] = useState(false)
@@ -123,11 +121,6 @@ export function Toolbar() {
           {copied ? 'Copied!' : 'Copy HTML'}
         </Button>
 
-        <div className="w-px h-5 bg-border mx-1" />
-
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={toggleTheme} title="Toggle theme">
-          {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-        </Button>
       </div>
 
       <PreviewModal html={previewHtml} open={previewOpen} onClose={() => setPreviewOpen(false)} />
