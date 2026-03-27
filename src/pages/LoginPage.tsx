@@ -16,7 +16,7 @@ export function LoginPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (user) navigate('/dashboard')
+    if (user) navigate('/ai-generator')
   }, [user, navigate])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,7 +28,7 @@ export function LoginPage() {
     if (error) {
       setError(error.message)
     } else {
-      navigate('/dashboard')
+      navigate('/ai-generator')
     }
   }
 

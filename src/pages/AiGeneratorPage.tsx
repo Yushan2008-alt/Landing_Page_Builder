@@ -4,9 +4,10 @@ import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
 import { useThemeStore } from '../store/themeStore'
+import { useProjects } from '../hooks/useProjects'
 import {
   ArrowLeft, Wand2, Copy, Check, ExternalLink, Moon, Sun,
-  Layers, AlertCircle, Zap, RotateCcw,
+  Layers, AlertCircle, Zap, RotateCcw, FolderPlus, Sparkles,
 } from 'lucide-react'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -286,11 +287,19 @@ function PlatformCard({ name, selected, onClick }: { name: string; selected: boo
 export function AiGeneratorPage() {
   const navigate = useNavigate()
   const { theme, toggleTheme } = useThemeStore()
+  const { createHtmlProject } = useProjects()
   const [form, setForm] = useState<Form>(EMPTY)
   const [prompt, setPrompt] = useState('')
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
   const resultRef = useRef<HTMLDivElement>(null)
+
+  // Import HTML state
+  const [importHtml, setImportHtml] = useState('')
+  const [importName, setImportName] = useState('')
+  const [importError, setImportError] = useState('')
+  const [importSaved, setImportSaved] = useState(false)
+  const importRef = useRef<HTMLDivElement>(null)
 
   const set = (patch: Partial<Form>) => setForm(prev => ({ ...prev, ...patch }))
 
@@ -314,15 +323,29 @@ export function AiGeneratorPage() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const handleOpenBlackbox = () => {
-    const url = `https://www.blackbox.ai/chat?q=${encodeURIComponent(prompt)}`
-    window.open(url, '_blank', 'noopener,noreferrer')
+  const handleOpenBlackbox = async () => {
+    // Copy prompt to clipboard first, then open Blackbox AI (URL param not supported)
+    try { await navigator.clipboard.writeText(prompt) } catch { /* silent */ }
+    window.open('https://www.blackbox.ai/', '_blank', 'noopener,noreferrer')
   }
 
   const handleReset = () => {
     setForm(EMPTY)
     setPrompt('')
     setError('')
+  }
+
+  const handleImportSave = () => {
+    if (!importName.trim()) { setImportError('Masukkan nama project.'); return }
+    if (!importHtml.trim()) { setImportError('Paste kode HTML terlebih dahulu.'); return }
+    if (!importHtml.trim().toLowerCase().includes('<!doctype html') && !importHtml.trim().toLowerCase().includes('<html')) {
+      setImportError('Kode yang dimasukkan bukan HTML yang valid.')
+      return
+    }
+    setImportError('')
+    const project = createHtmlProject(importName.trim(), importHtml.trim())
+    setImportSaved(true)
+    setTimeout(() => navigate(`/html-preview/${project.id}`), 1200)
   }
 
   return (
@@ -589,13 +612,19 @@ export function AiGeneratorPage() {
                   }}
                 >
                   <ExternalLink className="w-4 h-4" />
-                  Buka di Blackbox AI
+                  Salin & Buka Blackbox AI
                 </Button>
                 {prompt && (
-                  <p className="text-xs text-muted-foreground text-center mt-3 leading-relaxed">
-                    Prompt akan otomatis terpaste di Blackbox AI.<br />
-                    Jika tidak, gunakan tombol <strong>Salin</strong> lalu paste manual.
-                  </p>
+                  <div
+                    className="mt-3 rounded-lg px-3 py-2.5 text-xs leading-relaxed"
+                    style={{
+                      background: 'oklch(0.62 0.27 285 / 0.08)',
+                      border: '1px solid oklch(0.62 0.27 285 / 0.2)',
+                      color: 'oklch(0.70 0.06 285)',
+                    }}
+                  >
+                    <strong className="text-foreground">Cara pakai:</strong> Klik tombol di atas → prompt otomatis tersalin ke clipboard → Blackbox AI terbuka → <strong className="text-foreground">Paste (Ctrl+V)</strong> di kolom chat → kirim.
+                  </div>
                 )}
               </div>
             </div>
@@ -622,6 +651,119 @@ export function AiGeneratorPage() {
                 <p className="text-xs text-muted-foreground">Drag & drop builder → Dashboard</p>
               </div>
               <ArrowLeft className="w-4 h-4 text-muted-foreground ml-auto rotate-180" />
+            </div>
+
+            {/* ── Import HTML as Project ── */}
+            <div
+              ref={importRef}
+              className="mt-4 rounded-2xl overflow-hidden"
+              style={{
+                background: 'oklch(0.10 0.018 285)',
+                border: '1px solid oklch(0.62 0.27 285 / 0.25)',
+                boxShadow: '0 0 30px oklch(0.62 0.27 285 / 0.06)',
+              }}
+            >
+              {/* Header */}
+              <div
+                className="flex items-center gap-3 px-5 py-4 border-b"
+                style={{ borderColor: 'oklch(0.20 0.03 285)' }}
+              >
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
+                  style={{ background: 'linear-gradient(135deg, oklch(0.62 0.27 285), oklch(0.52 0.22 310))' }}
+                >
+                  <FolderPlus className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider" style={{ color: 'oklch(0.72 0.18 285)' }}>
+                    LANGKAH SELANJUTNYA
+                  </p>
+                  <p className="font-bold text-foreground text-sm">Simpan sebagai Project</p>
+                </div>
+              </div>
+
+              <div className="p-5 space-y-4">
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Setelah Blackbox AI selesai membuat kode, <strong className="text-foreground">copy semua kode HTML</strong> dari Blackbox AI, lalu paste di sini. Kode akan disimpan sebagai project di dashboard kamu.
+                </p>
+
+                {/* Steps */}
+                <div className="flex gap-2 text-xs">
+                  {['1. Generate di Blackbox AI', '2. Copy kode HTML', '3. Paste & simpan di sini'].map((s, i) => (
+                    <div
+                      key={i}
+                      className="flex-1 rounded-lg px-2 py-2 text-center leading-tight"
+                      style={{
+                        background: 'oklch(0.08 0.015 285)',
+                        border: '1px solid oklch(0.18 0.025 285)',
+                        color: 'oklch(0.65 0.05 285)',
+                      }}
+                    >
+                      {s}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Project name */}
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Nama Project <span className="text-primary">*</span>
+                  </Label>
+                  <Input
+                    value={importName}
+                    onChange={e => setImportName(e.target.value)}
+                    placeholder="Contoh: Landing Page Kursus Desain"
+                    className="h-9"
+                  />
+                </div>
+
+                {/* HTML textarea */}
+                <div className="space-y-1.5">
+                  <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    Kode HTML dari Blackbox AI <span className="text-primary">*</span>
+                  </Label>
+                  <textarea
+                    value={importHtml}
+                    onChange={e => { setImportHtml(e.target.value); setImportSaved(false) }}
+                    placeholder={'Paste kode HTML di sini...\n\n<!DOCTYPE html>\n<html>\n  ...\n</html>'}
+                    rows={8}
+                    className="w-full rounded-lg border px-3 py-2 text-xs font-mono resize-none outline-none transition-colors"
+                    style={{
+                      background: 'oklch(0.07 0.012 285)',
+                      borderColor: importHtml ? 'oklch(0.62 0.27 285 / 0.4)' : 'oklch(0.20 0.03 285)',
+                      color: 'oklch(0.75 0.03 285)',
+                    }}
+                  />
+                </div>
+
+                {/* Error */}
+                {importError && (
+                  <div
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs"
+                    style={{
+                      background: 'oklch(0.64 0.22 22 / 0.1)',
+                      border: '1px solid oklch(0.64 0.22 22 / 0.3)',
+                      color: 'oklch(0.75 0.18 22)',
+                    }}
+                  >
+                    <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                    {importError}
+                  </div>
+                )}
+
+                {/* Save button */}
+                <Button
+                  onClick={handleImportSave}
+                  disabled={importSaved}
+                  className="w-full h-10 gap-2 font-semibold"
+                  style={{ boxShadow: '0 0 20px oklch(0.62 0.27 285 / 0.25)' }}
+                >
+                  {importSaved
+                    ? (<><Check className="w-4 h-4" /> Project Tersimpan! Membuka preview...</>)
+                    : (<><Sparkles className="w-4 h-4" /> Simpan & Preview Project</>)
+                  }
+                </Button>
+              </div>
             </div>
           </div>
         </div>

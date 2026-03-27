@@ -40,6 +40,25 @@ export function useProjects() {
       sections: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      projectType: 'builder',
+    }
+    const updated = [project, ...projects]
+    setProjects(updated)
+    saveProjects(user.id, updated)
+    return project
+  }, [user, projects])
+
+  const createHtmlProject = useCallback((name: string, html: string): Project => {
+    if (!user) throw new Error('Not authenticated')
+    const project: Project = {
+      id: nanoid(),
+      userId: user.id,
+      name,
+      sections: [],
+      importedHtml: html,
+      projectType: 'html-import',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     }
     const updated = [project, ...projects]
     setProjects(updated)
@@ -68,5 +87,5 @@ export function useProjects() {
     return loadProjects(user.id).find((p) => p.id === id)
   }, [user])
 
-  return { projects, loading, createProject, updateProject, deleteProject, getProject }
+  return { projects, loading, createProject, createHtmlProject, updateProject, deleteProject, getProject }
 }

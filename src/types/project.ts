@@ -7,6 +7,8 @@ export interface Project {
   sections: SectionData[]
   createdAt: string
   updatedAt: string
+  projectType?: 'builder' | 'html-import'
+  importedHtml?: string
 }
 
 export interface Template {

@@ -18,7 +18,7 @@ export function RegisterPage() {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (user) navigate('/dashboard')
+    if (user) navigate('/ai-generator')
   }, [user, navigate])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,7 +44,7 @@ export function RegisterPage() {
     }
 
     if (session) {
-      navigate('/dashboard')
+      navigate('/ai-generator')
     } else if (needsConfirmation) {
       setNeedsConfirmation(true)
     }

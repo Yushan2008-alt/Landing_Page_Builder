@@ -11,7 +11,7 @@ import {
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu'
-import { Layers, Plus, MoreVertical, Moon, Sun, Trash2, ExternalLink, LogOut, Sparkles, Wand2 } from 'lucide-react'
+import { Layers, Plus, MoreVertical, Moon, Sun, Trash2, ExternalLink, LogOut, Sparkles, Wand2, FileCode2 } from 'lucide-react'
 
 export function DashboardPage() {
   const navigate = useNavigate()
@@ -170,17 +170,22 @@ export function DashboardPage() {
           </div>
         ) : (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {projects.map((project) => (
+            {projects.map((project) => {
+              const isHtmlImport = project.projectType === 'html-import'
+              const destination = isHtmlImport ? `/html-preview/${project.id}` : `/builder/${project.id}`
+              return (
               <div
                 key={project.id}
                 className="group glass rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:border-glow"
-                onClick={() => navigate(`/builder/${project.id}`)}
+                onClick={() => navigate(destination)}
               >
                 {/* Thumbnail */}
                 <div
                   className="h-36 flex items-center justify-center relative overflow-hidden"
                   style={{
-                    background: 'linear-gradient(135deg, oklch(0.14 0.04 285) 0%, oklch(0.10 0.025 310) 100%)',
+                    background: isHtmlImport
+                      ? 'linear-gradient(135deg, oklch(0.12 0.04 200) 0%, oklch(0.10 0.025 240) 100%)'
+                      : 'linear-gradient(135deg, oklch(0.14 0.04 285) 0%, oklch(0.10 0.025 310) 100%)',
                     borderBottom: '1px solid oklch(0.62 0.27 285 / 0.15)',
                   }}
                 >
@@ -188,10 +193,13 @@ export function DashboardPage() {
                     className="absolute inset-0 opacity-30"
                     style={{ background: 'radial-gradient(ellipse at center, oklch(0.62 0.27 285 / 0.3), transparent 70%)' }}
                   />
-                  <Layers className="w-10 h-10 text-primary/50 relative z-10 transition-transform duration-300 group-hover:scale-110" />
+                  {isHtmlImport
+                    ? <FileCode2 className="w-10 h-10 text-primary/50 relative z-10 transition-transform duration-300 group-hover:scale-110" />
+                    : <Layers className="w-10 h-10 text-primary/50 relative z-10 transition-transform duration-300 group-hover:scale-110" />
+                  }
                   <div className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-xs font-medium"
                     style={{ background: 'oklch(0.62 0.27 285 / 0.15)', color: 'oklch(0.80 0.18 285)', border: '1px solid oklch(0.62 0.27 285 / 0.2)' }}>
-                    {project.sections.length} sections
+                    {isHtmlImport ? 'AI Generated' : `${project.sections.length} sections`}
                   </div>
                 </div>
 
@@ -211,9 +219,9 @@ export function DashboardPage() {
                       <MoreVertical className="w-4 h-4" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" onClick={(e) => e.stopPropagation()}>
-                      <DropdownMenuItem onClick={() => navigate(`/builder/${project.id}`)} className="gap-2">
+                      <DropdownMenuItem onClick={() => navigate(destination)} className="gap-2">
                         <ExternalLink className="w-4 h-4" />
-                        Open Builder
+                        {isHtmlImport ? 'Open Preview' : 'Open Builder'}
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => setDeleteId(project.id)} className="text-destructive gap-2">
                         <Trash2 className="w-4 h-4" />
@@ -223,7 +231,8 @@ export function DashboardPage() {
                   </DropdownMenu>
                 </div>
               </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </main>
