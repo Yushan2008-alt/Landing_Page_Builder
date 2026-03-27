@@ -34,49 +34,49 @@
   --radius-xl: calc(var(--radius) * 1.4);
 }
 
-/* ── Dark (default) ─────────────────────────────── */
+/* ── Dark (default) — Electric Violet ─────────────── */
 :root {
-  --radius: 0.5rem;
-  --background: oklch(0.07 0 0);
-  --foreground: oklch(0.96 0 0);
-  --card: oklch(0.12 0 0);
-  --card-foreground: oklch(0.96 0 0);
-  --popover: oklch(0.10 0 0);
-  --popover-foreground: oklch(0.96 0 0);
-  --primary: oklch(0.56 0.24 264);
+  --radius: 0.625rem;
+  --background:         oklch(0.055 0.015 285);
+  --foreground:         oklch(0.96 0.01 290);
+  --card:               oklch(0.10 0.018 285);
+  --card-foreground:    oklch(0.96 0.01 290);
+  --popover:            oklch(0.09 0.018 285);
+  --popover-foreground: oklch(0.96 0.01 290);
+  --primary:            oklch(0.62 0.27 285);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.16 0 0);
-  --secondary-foreground: oklch(0.90 0 0);
-  --muted: oklch(0.16 0 0);
-  --muted-foreground: oklch(0.55 0 0);
-  --accent: oklch(0.56 0.24 264);
-  --accent-foreground: oklch(1 0 0);
-  --destructive: oklch(0.64 0.22 22);
-  --border: oklch(0.22 0 0);
-  --input: oklch(0.22 0 0);
-  --ring: oklch(0.56 0.24 264);
+  --secondary:          oklch(0.15 0.025 285);
+  --secondary-foreground: oklch(0.90 0.01 290);
+  --muted:              oklch(0.14 0.02 285);
+  --muted-foreground:   oklch(0.50 0.05 285);
+  --accent:             oklch(0.62 0.27 285);
+  --accent-foreground:  oklch(1 0 0);
+  --destructive:        oklch(0.64 0.22 22);
+  --border:             oklch(0.20 0.03 285);
+  --input:              oklch(0.18 0.025 285);
+  --ring:               oklch(0.62 0.27 285);
 }
 
 /* ── Light ──────────────────────────────────────── */
 .light {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.10 0 0);
-  --card: oklch(0.98 0 0);
-  --card-foreground: oklch(0.10 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.10 0 0);
-  --primary: oklch(0.56 0.24 264);
+  --background:         oklch(0.98 0.005 285);
+  --foreground:         oklch(0.10 0.02 285);
+  --card:               oklch(1 0 0);
+  --card-foreground:    oklch(0.10 0.02 285);
+  --popover:            oklch(1 0 0);
+  --popover-foreground: oklch(0.10 0.02 285);
+  --primary:            oklch(0.56 0.26 285);
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.96 0 0);
-  --secondary-foreground: oklch(0.12 0 0);
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.46 0 0);
-  --accent: oklch(0.56 0.24 264);
-  --accent-foreground: oklch(1 0 0);
-  --destructive: oklch(0.64 0.22 22);
-  --border: oklch(0.90 0 0);
-  --input: oklch(0.90 0 0);
-  --ring: oklch(0.56 0.24 264);
+  --secondary:          oklch(0.93 0.015 285);
+  --secondary-foreground: oklch(0.15 0.02 285);
+  --muted:              oklch(0.93 0.01 285);
+  --muted-foreground:   oklch(0.46 0.04 285);
+  --accent:             oklch(0.56 0.26 285);
+  --accent-foreground:  oklch(1 0 0);
+  --destructive:        oklch(0.64 0.22 22);
+  --border:             oklch(0.88 0.015 285);
+  --input:              oklch(0.88 0.015 285);
+  --ring:               oklch(0.56 0.26 285);
 }
 
 @layer base {
@@ -90,5 +90,54 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* ── Futuristic utilities ── */
+@layer utilities {
+  .bg-grid {
+    background-image: radial-gradient(oklch(0.62 0.27 285 / 0.12) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+
+  .glow-primary {
+    box-shadow: 0 0 40px oklch(0.62 0.27 285 / 0.25), 0 0 80px oklch(0.62 0.27 285 / 0.10);
+  }
+
+  .glow-primary-sm {
+    box-shadow: 0 0 20px oklch(0.62 0.27 285 / 0.20);
+  }
+
+  .glass {
+    background: oklch(0.12 0.02 285 / 0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid oklch(0.62 0.27 285 / 0.18);
+  }
+
+  .glass-light {
+    background: oklch(1 0 0 / 0.04);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid oklch(1 0 0 / 0.10);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, oklch(0.80 0.18 285) 0%, oklch(0.78 0.18 210) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-text-warm {
+    background: linear-gradient(135deg, oklch(0.82 0.16 285) 0%, oklch(0.85 0.14 330) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .border-glow {
+    border-color: oklch(0.62 0.27 285 / 0.5);
+    box-shadow: 0 0 16px oklch(0.62 0.27 285 / 0.15);
   }
 }

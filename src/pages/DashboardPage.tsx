@@ -11,7 +11,7 @@ import {
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '../components/ui/dropdown-menu'
-import { Layers, Plus, MoreVertical, Moon, Sun, Trash2, ExternalLink, LogOut } from 'lucide-react'
+import { Layers, Plus, MoreVertical, Moon, Sun, Trash2, ExternalLink, LogOut, Sparkles } from 'lucide-react'
 
 export function DashboardPage() {
   const navigate = useNavigate()
@@ -38,32 +38,51 @@ export function DashboardPage() {
   }
 
   const formatDate = (iso: string) => {
-    return new Date(iso).toLocaleDateString('en-US', {
-      month: 'short', day: 'numeric', year: 'numeric',
+    return new Date(iso).toLocaleDateString('id-ID', {
+      day: 'numeric', month: 'short', year: 'numeric',
     })
   }
 
+  const userInitial = user?.email?.[0]?.toUpperCase() ?? '?'
+
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background bg-grid text-foreground">
+      {/* Ambient glow */}
+      <div
+        className="pointer-events-none fixed top-[-200px] right-[-100px] w-[500px] h-[500px] opacity-10 blur-3xl rounded-full"
+        style={{ background: 'radial-gradient(ellipse, oklch(0.62 0.27 285) 0%, transparent 70%)' }}
+        aria-hidden
+      />
+
       {/* Navbar */}
-      <nav className="border-b border-border bg-card sticky top-0 z-40">
+      <nav className="border-b border-border/50 glass-light sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-6 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-primary rounded-md flex items-center justify-center">
+          <div className="flex items-center gap-2.5">
+            <div
+              className="w-7 h-7 rounded-lg flex items-center justify-center"
+              style={{ background: 'linear-gradient(135deg, oklch(0.62 0.27 285), oklch(0.52 0.22 310))' }}
+            >
               <Layers className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="font-semibold text-sm">LP Builder</span>
+            <span className="font-semibold text-sm tracking-tight">LP Builder</span>
           </div>
+
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" onClick={toggleTheme} title="Toggle theme">
+            <Button variant="ghost" size="icon" onClick={toggleTheme} className="text-muted-foreground" title="Toggle theme">
               {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </Button>
+
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted transition-colors outline-none">
-                <div className="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center text-xs font-medium text-primary">
-                  {user?.email?.[0]?.toUpperCase()}
+              <DropdownMenuTrigger className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm hover:bg-muted/50 transition-colors outline-none">
+                <div
+                  className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-semibold text-white"
+                  style={{ background: 'linear-gradient(135deg, oklch(0.62 0.27 285), oklch(0.52 0.22 310))' }}
+                >
+                  {userInitial}
                 </div>
-                <span className="text-sm hidden sm:block">{user?.email}</span>
+                <span className="text-sm text-muted-foreground hidden sm:block max-w-[160px] truncate">
+                  {user?.email}
+                </span>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem onClick={signOut} className="text-destructive gap-2">
@@ -76,7 +95,7 @@ export function DashboardPage() {
         </div>
       </nav>
 
-      <main className="max-w-6xl mx-auto px-6 py-10">
+      <main className="max-w-6xl mx-auto px-6 py-10 relative z-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
@@ -94,18 +113,29 @@ export function DashboardPage() {
         {/* Project Grid */}
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <div
+              className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin"
+              style={{ borderColor: 'oklch(0.62 0.27 285 / 0.3)', borderTopColor: 'oklch(0.62 0.27 285)' }}
+            />
           </div>
         ) : projects.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <div className="w-16 h-16 bg-muted rounded-2xl flex items-center justify-center mb-4">
-              <Layers className="w-7 h-7 text-muted-foreground" />
+            <div
+              className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
+              style={{
+                background: 'linear-gradient(135deg, oklch(0.62 0.27 285 / 0.15), oklch(0.62 0.27 285 / 0.05))',
+                border: '1px solid oklch(0.62 0.27 285 / 0.2)',
+              }}
+            >
+              <Sparkles className="w-7 h-7 text-primary" />
             </div>
-            <h3 className="text-lg font-medium text-foreground mb-2">No projects yet</h3>
-            <p className="text-sm text-muted-foreground mb-6">Create your first landing page project to get started.</p>
+            <h3 className="text-lg font-semibold text-foreground mb-2">Belum ada project</h3>
+            <p className="text-sm text-muted-foreground mb-6 max-w-xs">
+              Buat landing page pertamamu dan mulai mengkonversi pengunjung jadi pelanggan.
+            </p>
             <Button onClick={() => setShowCreate(true)} className="gap-2">
               <Plus className="w-4 h-4" />
-              Create Project
+              Buat Project Pertama
             </Button>
           </div>
         ) : (
@@ -113,26 +143,40 @@ export function DashboardPage() {
             {projects.map((project) => (
               <div
                 key={project.id}
-                className="group bg-card border border-border rounded-xl overflow-hidden hover:border-primary/50 transition-all cursor-pointer"
+                className="group glass rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.02] hover:border-glow"
                 onClick={() => navigate(`/builder/${project.id}`)}
               >
                 {/* Thumbnail */}
-                <div className="h-36 bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center border-b border-border">
-                  <Layers className="w-10 h-10 text-primary/40" />
+                <div
+                  className="h-36 flex items-center justify-center relative overflow-hidden"
+                  style={{
+                    background: 'linear-gradient(135deg, oklch(0.14 0.04 285) 0%, oklch(0.10 0.025 310) 100%)',
+                    borderBottom: '1px solid oklch(0.62 0.27 285 / 0.15)',
+                  }}
+                >
+                  <div
+                    className="absolute inset-0 opacity-30"
+                    style={{ background: 'radial-gradient(ellipse at center, oklch(0.62 0.27 285 / 0.3), transparent 70%)' }}
+                  />
+                  <Layers className="w-10 h-10 text-primary/50 relative z-10 transition-transform duration-300 group-hover:scale-110" />
+                  <div className="absolute top-2 right-2 px-1.5 py-0.5 rounded text-xs font-medium"
+                    style={{ background: 'oklch(0.62 0.27 285 / 0.15)', color: 'oklch(0.80 0.18 285)', border: '1px solid oklch(0.62 0.27 285 / 0.2)' }}>
+                    {project.sections.length} sections
+                  </div>
                 </div>
 
                 {/* Info */}
                 <div className="p-4 flex items-start justify-between gap-2">
                   <div className="min-w-0">
-                    <h3 className="font-medium text-foreground truncate">{project.name}</h3>
+                    <h3 className="font-semibold text-foreground truncate">{project.name}</h3>
                     <p className="text-xs text-muted-foreground mt-0.5">
-                      {project.sections.length} section{project.sections.length !== 1 ? 's' : ''} · Updated {formatDate(project.updatedAt)}
+                      Updated {formatDate(project.updatedAt)}
                     </p>
                   </div>
                   <DropdownMenu>
                     <DropdownMenuTrigger
                       onClick={(e) => e.stopPropagation()}
-                      className="shrink-0 opacity-0 group-hover:opacity-100 h-7 w-7 flex items-center justify-center rounded-md hover:bg-muted transition-colors outline-none"
+                      className="shrink-0 opacity-0 group-hover:opacity-100 h-7 w-7 flex items-center justify-center rounded-lg hover:bg-muted/60 transition-all outline-none"
                     >
                       <MoreVertical className="w-4 h-4" />
                     </DropdownMenuTrigger>
@@ -141,10 +185,7 @@ export function DashboardPage() {
                         <ExternalLink className="w-4 h-4" />
                         Open Builder
                       </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => setDeleteId(project.id)}
-                        className="text-destructive gap-2"
-                      >
+                      <DropdownMenuItem onClick={() => setDeleteId(project.id)} className="text-destructive gap-2">
                         <Trash2 className="w-4 h-4" />
                         Delete
                       </DropdownMenuItem>
@@ -165,7 +206,7 @@ export function DashboardPage() {
           </DialogHeader>
           <div className="py-2">
             <Input
-              placeholder="Project name"
+              placeholder="Nama project..."
               value={newName}
               onChange={(e) => setNewName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleCreate()}
@@ -183,14 +224,14 @@ export function DashboardPage() {
       <Dialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Delete Project</DialogTitle>
+            <DialogTitle>Hapus Project</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-muted-foreground py-2">
-            This action cannot be undone. The project and all its sections will be permanently deleted.
+            Tindakan ini tidak dapat dibatalkan. Project dan semua section-nya akan dihapus permanen.
           </p>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteId(null)}>Cancel</Button>
-            <Button variant="destructive" onClick={handleDelete}>Delete</Button>
+            <Button variant="destructive" onClick={handleDelete}>Hapus</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

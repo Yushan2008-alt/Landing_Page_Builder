@@ -1,8 +1,7 @@
 import { useAuthStore } from '../store/authStore'
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
+import { localSignUp, localSignIn, localSignOut } from '../lib/localAuth'
 import { useNavigate } from 'react-router-dom'
-
-const CONFIG_ERROR = 'Supabase belum dikonfigurasi. Isi VITE_SUPABASE_URL dan VITE_SUPABASE_ANON_KEY di file .env.local lalu restart dev server.'
 
 function friendlyError(message: string): string {
   if (message.includes('Failed to fetch') || message.includes('NetworkError') || message.includes('fetch'))
@@ -21,25 +20,37 @@ function friendlyError(message: string): string {
 }
 
 export function useAuth() {
-  const { user, session, loading } = useAuthStore()
+  const { user, loading, setUser, setLoading } = useAuthStore()
   const navigate = useNavigate()
 
   const signIn = async (email: string, password: string) => {
-    if (!isSupabaseConfigured) return { error: new Error(CONFIG_ERROR), session: null }
+    if (!isSupabaseConfigured) {
+      const { error, user: localUser } = await localSignIn(email, password)
+      if (error) return { error }
+      setUser(localUser)
+      return { error: null }
+    }
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) return { error: new Error(friendlyError(error.message)), session: null }
-    return { error: null, session: data.session }
+    if (error) return { error: new Error(friendlyError(error.message)) }
+    setUser(data.user ? { id: data.user.id, email: data.user.email } : null)
+    return { error: null }
   }
 
   const signUp = async (email: string, password: string) => {
-    if (!isSupabaseConfigured) return { error: new Error(CONFIG_ERROR), session: null, needsConfirmation: false }
+    if (!isSupabaseConfigured) {
+      const { error, user: localUser } = await localSignUp(email, password)
+      if (error) return { error, session: null, needsConfirmation: false }
+      setUser(localUser)
+      return { error: null, session: { local: true }, needsConfirmation: false }
+    }
 
     const { data, error } = await supabase.auth.signUp({ email, password })
     if (error) return { error: new Error(friendlyError(error.message)), session: null, needsConfirmation: false }
 
-    // If session exists → email confirmation is OFF → user is already logged in
-    // If session is null → email confirmation is ON → user must confirm email
+    if (data.session) {
+      setUser({ id: data.session.user.id, email: data.session.user.email })
+    }
     return {
       error: null,
       session: data.session,
@@ -48,9 +59,17 @@ export function useAuth() {
   }
 
   const signOut = async () => {
+    if (!isSupabaseConfigured) {
+      localSignOut()
+      setUser(null)
+      navigate('/')
+      return
+    }
     await supabase.auth.signOut()
+    setUser(null)
+    setLoading(false)
     navigate('/')
   }
 
-  return { user, session, loading, signIn, signUp, signOut, isConfigured: isSupabaseConfigured }
+  return { user, loading, signIn, signUp, signOut, isConfigured: isSupabaseConfigured }
 }
